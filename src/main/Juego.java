@@ -18,7 +18,7 @@ public class Juego extends PApplet implements OnMessageListener {
 	
 	//Jugador
 	Jugador jugador;
-	
+
 	//Disparos
 	private ArrayList<Disparo> disparos;
 	
@@ -28,6 +28,12 @@ public class Juego extends PApplet implements OnMessageListener {
 	
 	//pantallas
 	int pantalla;
+	
+	//Reina de dulce
+	ReinaDulce reina;
+	
+	ArrayList <Enemigo> enemigos;
+	Enemigo ene;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -43,13 +49,20 @@ public class Juego extends PApplet implements OnMessageListener {
 		tcp= TCPSingleton.getInstance();
 		tcp.setObserver(this);
 		
+		
+		//Cargamos las imagenes de los personajes
 		cuphead=loadImage("img/avionCupHead.png");
 		mugman= loadImage("img/avionMugman.png");
 		
 		pantalla=0;
 		
+		//Arraylist del disparo de los jugadores 
 		disparos= new ArrayList<>();
 		
+		reina= new ReinaDulce(this,200,100,5,200);
+		
+		
+		enemigos=new ArrayList<Enemigo>();
 	}
 	
 	
@@ -66,6 +79,15 @@ public class Juego extends PApplet implements OnMessageListener {
 		case 0: 
 			fill(255);
 			text("intro",255,255);
+			
+			//text("x=" + mouseX + "y=" + mouseY, mouseX, mouseY);
+			
+			
+			reina.pintar();
+			reina.movimiento();
+			
+			
+			
 			break;
 			
 		//pantalla juego
