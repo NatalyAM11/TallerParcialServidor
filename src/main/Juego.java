@@ -83,8 +83,6 @@ public class Juego extends PApplet implements OnMessageListener {
 			//text("x=" + mouseX + "y=" + mouseY, mouseX, mouseY);
 			
 			
-			reina.pintar();
-			reina.movimiento();
 			
 			
 			
@@ -92,6 +90,10 @@ public class Juego extends PApplet implements OnMessageListener {
 			
 		//pantalla juego
 		case 1:
+			
+
+			reina.pintar();
+			reina.movimiento();
 			
 			if(tcp.posicion!=null) {
 				
