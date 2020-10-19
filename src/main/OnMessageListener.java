@@ -3,13 +3,16 @@ package main;
 import model.Jugador;
 import model.Posicion;
 import model.Disparo;
+import model.Vida;
 
 public interface OnMessageListener {
 	
-	void Jugador (Jugador jugador);
+	void messageVida (Vida vida);
 	
-	void Posicion (Posicion posicion);
+	void messageJugador (Jugador jugador);
 	
-	void Disparo (Disparo disparo);
-
+	void messagePosicion (Posicion posicion);
+	
+	void messageDisparo (Disparo disparo);
+	
 }

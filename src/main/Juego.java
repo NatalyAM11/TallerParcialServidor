@@ -2,6 +2,7 @@ package main;
 
 import model.Jugador;
 import model.Posicion;
+import model.Vida;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,12 @@ public class Juego extends PApplet implements OnMessageListener {
 	
 	//Jugador
 	Jugador jugador;
+	
+	//Arraylist de la vida de los jugadores
+	private ArrayList<Vida> vidas;
+	
+	//vidas
+	Vida vida;
 
 	//Disparos
 	private ArrayList<Disparo> disparos;
@@ -32,8 +39,10 @@ public class Juego extends PApplet implements OnMessageListener {
 	//Reina de dulce
 	ReinaDulce reina;
 	
-	ArrayList <Enemigo> enemigos;
-	Enemigo ene;
+	int vidaReina;
+	
+	
+
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -59,39 +68,44 @@ public class Juego extends PApplet implements OnMessageListener {
 		//Arraylist del disparo de los jugadores 
 		disparos= new ArrayList<>();
 		
-		reina= new ReinaDulce(this,200,100,5,200);
+		//Arraylist del disparo de los jugadores 
+		vidas= new ArrayList<>();
+		
+		vidaReina=1000;
+		
+
+		//Creamos a la reina dulce
+		reina= new ReinaDulce(this,200,100,5,vidaReina);
 		
 		
-		enemigos=new ArrayList<Enemigo>();
 	}
 	
 	
 	public void draw() {
 		background(0);
-		
+
 		//Valido que cuando el jugador ya no sea nulo para poder seguir a la otra pantalla del juego
 		if(jugador!=null) {
 		pantalla=1;
 		
 		}
 		
+
+		if(vidaReina==0) {
+			pantalla=3;
+		}
+		
 		switch (pantalla) {
 		case 0: 
 			fill(255);
 			text("intro",255,255);
-			
-			//text("x=" + mouseX + "y=" + mouseY, mouseX, mouseY);
-			
-			
-			
-			
-			
+		
 			break;
 			
 		//pantalla juego
 		case 1:
-			
-
+		
+			//Enemigos 
 			reina.pintar();
 			reina.movimiento();
 			
@@ -99,12 +113,12 @@ public class Juego extends PApplet implements OnMessageListener {
 				
 				//Validamos si escogen a cuphead
 				if(jugador.personaje.equals("cuphead")) {
-				image(cuphead,posicion.getX(),400,80,100);
+				image(cuphead,posicion.getX(),posicion.getY(),80,100);
 				}
 				
 				//Validamos si esogen a mugman
 				if(jugador.personaje.equals("mugman")) {
-					image(mugman,posicion.getX(),400,80,100);
+					image(mugman,posicion.getX(),posicion.getY(),80,100);
 				}
 				
 				}else {
@@ -118,38 +132,94 @@ public class Juego extends PApplet implements OnMessageListener {
 				}
 			
 			
+			//for que recorre el arraylist de disparo
 				for(int i=0; i<disparos.size();i++) {
 					Disparo disparoN= disparos.get(i);
 					
 					fill(255);
 					ellipse(disparoN.getX(),disparoN.getY(),20,20);
 					
+					//Hacemos que las balas se muevan hacia arriba
 					disparoN.setY(disparoN.getY()-disparoN.getVel());
+					
+					//Validamos que si la bala del jugador toca a la reina, esta resulta lastimada
+					if(dist(disparoN.getX(), disparoN.getY(), reina.getPosX(),reina.getPosY())<80) {
+						disparos.remove(i);
+						
+						vidaReina=vidaReina-50;
+						
+						System.out.println(vidaReina);
+						
+					}
 				}
+				
+				
+				//metodo que valida que el jugador pierda vida cuando es golpeado por ataque de la reina
+				validarAtaqueEnemigo();
 			
+			break;
+			
+		case 3: 
+			
+			fill(255);
+			textSize(50);
+			text("Gano",255,255);
 			break;
 			
 		}
 		
-		
-		
-		
 	}
-
 	
-	public void Jugador(model.Jugador jugador) {
+	
+	//validamos cuando alguno de los ataques de la reina toque a los jugadores, estos pierden vida
+	public void validarAtaqueEnemigo() {
+		
+		for(int i=0; i<reina.enemigos.size();i++) {
+			
+			if(tcp.posicion!=null) {
+				if(dist(reina.enemigos.get(i).getPosX(),reina.enemigos.get(i).getPosY(), posicion.getX()+80,posicion.getY())<40) {
+				
+				//Eliminamos la bala
+				reina.enemigos.remove(i);
+				
+				}
+			}
+		}
+	}
+	
+	
+	
+	
+	//OnMessageListener
+	
+	public void messageVida(Vida vida) {
+		this.vida=vida;
+		
+		vidas.add(new Vida(vida.getVidas()));
+		vidas.add(new Vida(vida.getVidas()));
+		vidas.add(new Vida(vida.getVidas()));
+		System.out.println("Hay : "+vidas.size()+ "vidas");
+		
+		}
+	
+	
+	public void messageJugador(Jugador jugador) {
 		this.jugador=jugador;
 		
+		
 	}
 
 	
-	public void Posicion(model.Posicion posicion) {
+	public void messagePosicion(model.Posicion posicion) {
 	this.posicion=posicion;
 		
 	}
 
-	public void Disparo(model.Disparo disparo) {
+	public void messageDisparo(model.Disparo disparo) {
 	disparos.add(disparo);
 		
 	}
+
+	
+
 }

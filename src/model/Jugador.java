@@ -5,8 +5,10 @@ public class Jugador {
     public String type="Jugador";
     public String personaje;
 
+
     public Jugador (String personaje){
         this.personaje=personaje;
+
     }
 
 public String getType() {
@@ -24,4 +26,7 @@ public String getPersonaje() {
 public void setPersonaje(String personaje) {
     this.personaje = personaje;
 }
+
 }
+
+

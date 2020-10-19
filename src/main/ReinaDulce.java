@@ -8,11 +8,13 @@ import processing.core.PApplet;
 
 public class ReinaDulce {
 		
+	
+		PApplet app;
+	
+	
 		//posicioines y velocidad
 		int posX,posY,vel,vida;
-		
-		
-		PApplet app;
+
 		
 		//El ataque de la reina es enviar enemigos que le quiten vida a los jugadores
 		//por eso creamos aqui mismo el arraylist de enemigos porque ella es la que tiene el metodo de ataque
@@ -38,6 +40,7 @@ public class ReinaDulce {
 		
 		
 	}	
+	
 	
 	
 	public void pintar() {
@@ -83,8 +86,6 @@ public class ReinaDulce {
 						//Añadimos un enemigo al arralist cada 5 seg, es decir cada 5seg la reina atacara
 						ene= new Enemigo(app,this.posX,this.posY);
 						enemigos.add(ene);
-						System.out.println(enemigos.size());
-						
 						
 						  try {
                               Thread.sleep(3000);

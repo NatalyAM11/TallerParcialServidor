@@ -13,6 +13,7 @@ import java.net.Socket;
 import model.Disparo;
 import model.Jugador;
 import model.Posicion;
+import model.Vida;
 
 import com.google.gson.Gson;
 
@@ -31,6 +32,9 @@ public class TCPSingleton extends Thread {
 	
 	//disparo
 	Disparo disparo;
+	
+	//vida
+	Vida vida;
 	
 
 	
@@ -132,7 +136,7 @@ public class TCPSingleton extends Thread {
 						case "Jugador": 
 							jugador=gson.fromJson(mensaje, Jugador.class);
 							
-							observer.Jugador(jugador);
+							observer.messageJugador(jugador);
 							
 							System.out.println(jugador.personaje);
 							break;
@@ -140,7 +144,7 @@ public class TCPSingleton extends Thread {
 						case "Posicion": 
 							posicion=gson.fromJson(mensaje, Posicion.class);
 							
-							observer.Posicion(posicion);
+							observer.messagePosicion(posicion);
 							
 							System.out.println(posicion.getX());
 							break;
@@ -148,14 +152,19 @@ public class TCPSingleton extends Thread {
 						case "Disparo": 
 							disparo=gson.fromJson(mensaje, Disparo.class);
 							
-							observer.Disparo(disparo);
+							observer.messageDisparo(disparo);
 							
-							System.out.println(disparo);
 							break;
+					
+						case "Vida":
+							vida=gson.fromJson(mensaje, Vida.class);
+							observer.messageVida(vida);
+							break;
+							
 						}
 				       
 				    }
-						System.out.println(mensaje);
+						//System.out.println(mensaje);
 				    
 				    }
 				    
