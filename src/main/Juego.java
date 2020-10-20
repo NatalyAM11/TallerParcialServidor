@@ -153,9 +153,19 @@ public class Juego extends PApplet implements OnMessageListener {
 					}
 				}
 				
+				//for para pintar las vidas
+				for(int j=0; j<vidas.size();j++) {
+					ellipse(100*j,50,20,20);
+				}
 				
 				//metodo que valida que el jugador pierda vida cuando es golpeado por ataque de la reina
 				validarAtaqueEnemigo();
+				
+				
+				//Validamos cuando el jugador pierda todas sus vidas
+				if(vidas.size()==0) {
+					System.out.println("FIN DEL JUEGOOOOOOOOOOOOOOO!");
+				}
 			
 			break;
 			
@@ -177,14 +187,20 @@ public class Juego extends PApplet implements OnMessageListener {
 		for(int i=0; i<reina.enemigos.size();i++) {
 			
 			if(tcp.posicion!=null) {
-				if(dist(reina.enemigos.get(i).getPosX(),reina.enemigos.get(i).getPosY(), posicion.getX()+80,posicion.getY())<40) {
+				if(dist(reina.enemigos.get(i).getPosX()+15,reina.enemigos.get(i).getPosY()+15, posicion.getX()+40,posicion.getY()+50)<20) {
+					
+				//Eliminamos el enemigo que toque al jugador
+				reina.enemigos.remove(reina.enemigos.get(i));
 				
-				//Eliminamos la bala
-				reina.enemigos.remove(i);
+				//quitamos las vida del jugador
+				if(vidas.size()>0) {
+				vidas.remove(vidas.size()-1);
+				}
 				
 				}
-			}
 		}
+	}
+
 	}
 	
 	
