@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import model.Disparo;
 import model.Jugador;
@@ -23,6 +24,7 @@ public class TCPSingleton extends Thread {
 
 	// Socket
 	private ServerSocket server;
+	private ArrayList <Session> sesion;
 
 	private TCPSingleton() {
 
@@ -52,13 +54,14 @@ public class TCPSingleton extends Thread {
 			// Conexión
 			server = new ServerSocket(5000);
 
-			while (true) {
+			while (sesion.size() < 2) {
 
 				System.out.println("Esperando conexión");
 				Socket socket = server.accept();
 				Session session = new Session(socket);
 				session.setObserver(observer);
 				session.start();
+				sesion.add(session);
 				System.out.println("Conectado a el usuario dentro de sesion");
 
 			}
@@ -69,4 +72,9 @@ public class TCPSingleton extends Thread {
 		}
 
 	}
+
+	public ArrayList<Session> getSesion() {
+		return sesion;
+	}
+	
 }
