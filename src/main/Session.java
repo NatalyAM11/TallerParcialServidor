@@ -87,10 +87,8 @@ public class Session extends Thread {
 					
 				case "Posicion": 
 					posicion=gson.fromJson(mensaje, Posicion.class);
-					
-					observer.messagePosicion(posicion);
-					
 					System.out.println(posicion.getX());
+					observer.messagePosicion(posicion);
 					break;
 					
 				case "Disparo": 

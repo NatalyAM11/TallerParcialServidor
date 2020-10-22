@@ -62,7 +62,7 @@ public class TCPSingleton extends Thread {
 				Session session = new Session(socket);
 				session.setObserver(observer);
 				session.start();
-				sesion.add(session);
+				//sesion.add(session);
 				System.out.println("Conectado a el usuario dentro de sesion");
 			}
 			

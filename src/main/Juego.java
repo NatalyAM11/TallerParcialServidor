@@ -86,9 +86,9 @@ public class Juego extends PApplet implements OnMessageListener {
 		background(0);
 
 		//Valido que cuando el jugador ya no sea nulo para poder seguir a la otra pantalla del juego
-		if(jugador.personaje!=null) {
+		/*if(jugador!=null) {
 		pantalla=1;	
-		}
+		}*/
 		
 
 		if(vidaReina==0) {
@@ -109,7 +109,7 @@ public class Juego extends PApplet implements OnMessageListener {
 			reina.pintar();
 			reina.movimiento();
 			
-			if(sis.posicion!=null) {
+			if(posicion!=null) {
 				
 				//Validamos si escogen a cuphead
 				if(jugador.personaje.equals("cuphead")) {
@@ -186,7 +186,7 @@ public class Juego extends PApplet implements OnMessageListener {
 		
 		for(int i=0; i<reina.enemigos.size();i++) {
 			
-			if(sis.posicion!=null) {
+			if(posicion!=null) {
 				if(dist(reina.enemigos.get(i).getPosX()+15,reina.enemigos.get(i).getPosY()+15, posicion.getX()+40,posicion.getY()+50)<20) {
 					
 				//Eliminamos el enemigo que toque al jugador
