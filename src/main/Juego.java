@@ -13,6 +13,7 @@ import processing.core.PImage;
 public class Juego extends PApplet implements OnMessageListener {
 	
 	TCPSingleton tcp;
+	Session sis;
 	
 	//Imagenes
 	PImage cuphead,mugman;
@@ -109,7 +110,7 @@ public class Juego extends PApplet implements OnMessageListener {
 			reina.pintar();
 			reina.movimiento();
 			
-			if(tcp.posicion!=null) {
+			if(sis.posicion!=null) {
 				
 				//Validamos si escogen a cuphead
 				if(jugador.personaje.equals("cuphead")) {
@@ -186,7 +187,7 @@ public class Juego extends PApplet implements OnMessageListener {
 		
 		for(int i=0; i<reina.enemigos.size();i++) {
 			
-			if(tcp.posicion!=null) {
+			if(sis.posicion!=null) {
 				if(dist(reina.enemigos.get(i).getPosX()+15,reina.enemigos.get(i).getPosY()+15, posicion.getX()+40,posicion.getY()+50)<20) {
 					
 				//Eliminamos el enemigo que toque al jugador
