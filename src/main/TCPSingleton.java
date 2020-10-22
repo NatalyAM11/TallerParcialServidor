@@ -54,7 +54,8 @@ public class TCPSingleton extends Thread {
 			// Conexión
 			server = new ServerSocket(5000);
 
-			while (sesion.size() < 2) {
+			
+			while (true) {
 
 				System.out.println("Esperando conexión");
 				Socket socket = server.accept();
@@ -63,8 +64,8 @@ public class TCPSingleton extends Thread {
 				session.start();
 				sesion.add(session);
 				System.out.println("Conectado a el usuario dentro de sesion");
-
 			}
+			
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

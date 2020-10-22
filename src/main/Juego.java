@@ -86,9 +86,8 @@ public class Juego extends PApplet implements OnMessageListener {
 		background(0);
 
 		//Valido que cuando el jugador ya no sea nulo para poder seguir a la otra pantalla del juego
-		if(jugador!=null) {
-		pantalla=1;
-		
+		if(jugador.personaje!=null) {
+		pantalla=1;	
 		}
 		
 
@@ -235,6 +234,13 @@ public class Juego extends PApplet implements OnMessageListener {
 	public void messageDisparo(model.Disparo disparo) {
 	disparos.add(disparo);
 		
+	}
+	
+	public void mousePressed() {
+	
+			pantalla=1;
+			
+			
 	}
 
 	

@@ -102,13 +102,14 @@ public class Session extends Thread {
 			
 				case "Vida":
 					vida=gson.fromJson(mensaje, Vida.class);
+					System.out.println(vida.getVidas());
 					observer.messageVida(vida);
 					break;
 					
 				}
 		       
 		    }
-				//System.out.println(mensaje);
+				System.out.println(mensaje);
 		    
 		    }
 			
@@ -118,9 +119,7 @@ public class Session extends Thread {
 		}
 	}
 
-	public void setObserver(OnMessageListener observer2) {
-		// TODO Auto-generated method stub
-		
+	public void setObserver(OnMessageListener observer) {
 		this.observer = observer;
 		
 	}
