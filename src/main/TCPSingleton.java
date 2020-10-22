@@ -21,12 +21,16 @@ import com.google.gson.Gson;
 public class TCPSingleton extends Thread {
 
 	private static TCPSingleton unicaInstancia;
+	
+	private int cantidad;
 
 	// Socket
 	private ServerSocket server;
 	private ArrayList <Session> sesion;
 
 	private TCPSingleton() {
+		
+		
 
 	}
 
@@ -55,6 +59,8 @@ public class TCPSingleton extends Thread {
 			server = new ServerSocket(5000);
 
 			
+			cantidad = sesion.size();
+			
 			while (true) {
 
 				System.out.println("Esperando conexión");
@@ -62,10 +68,10 @@ public class TCPSingleton extends Thread {
 				Session session = new Session(socket);
 				session.setObserver(observer);
 				session.start();
-				//sesion.add(session);
+				sesion.add(session);
 				System.out.println("Conectado a el usuario dentro de sesion");
+
 			}
-			
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

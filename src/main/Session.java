@@ -87,8 +87,10 @@ public class Session extends Thread {
 					
 				case "Posicion": 
 					posicion=gson.fromJson(mensaje, Posicion.class);
-					System.out.println(posicion.getX());
+					
 					observer.messagePosicion(posicion);
+					
+					System.out.println(posicion.getX());
 					break;
 					
 				case "Disparo": 
@@ -100,14 +102,13 @@ public class Session extends Thread {
 			
 				case "Vida":
 					vida=gson.fromJson(mensaje, Vida.class);
-					System.out.println(vida.getVidas());
 					observer.messageVida(vida);
 					break;
 					
 				}
 		       
 		    }
-				System.out.println(mensaje);
+				//System.out.println(mensaje);
 		    
 		    }
 			
@@ -118,6 +119,8 @@ public class Session extends Thread {
 	}
 
 	public void setObserver(OnMessageListener observer) {
+		// TODO Auto-generated method stub
+		
 		this.observer = observer;
 		
 	}
