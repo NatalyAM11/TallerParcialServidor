@@ -29,7 +29,7 @@ public class TCPSingleton extends Thread {
 	private ArrayList <Session> sesion;
 
 	private TCPSingleton() {
-		
+		sesion= new ArrayList<Session>();
 		
 	}
 
@@ -55,7 +55,7 @@ public class TCPSingleton extends Thread {
 		try {
 
 			// Conexión
-			sesion= new ArrayList<Session>();
+		
 			server = new ServerSocket(5000);
 			
 			

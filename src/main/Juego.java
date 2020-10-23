@@ -13,13 +13,9 @@ import processing.core.PImage;
 public class Juego extends PApplet implements OnMessageListener {
 
 	TCPSingleton tcp;
-	Session sis;
 
 	// Imagenes
 	PImage cuphead, mugman;
-
-	// Jugador
-	Jugador jugador;
 
 	// Arraylist de la vida de los jugadores
 	private ArrayList<Vida> vidas;
@@ -42,9 +38,6 @@ public class Juego extends PApplet implements OnMessageListener {
 
 	int vidaReina;
 
-	// array de session
-	ArrayList<Session> sesiones;
-
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PApplet.main("main.Juego");
@@ -54,13 +47,10 @@ public class Juego extends PApplet implements OnMessageListener {
 	public void settings() {
 		size(800, 500);
 	}
-	
 
 	public void setup() {
 		tcp = TCPSingleton.getInstance();
 		tcp.setObserver(this);
-		
-		sesiones = tcp.getSesion();
 
 		// Cargamos las imagenes de los personajes
 		cuphead = loadImage("img/avionCupHead.png");
@@ -86,7 +76,7 @@ public class Juego extends PApplet implements OnMessageListener {
 
 		// Valido que cuando el jugador ya no sea nulo para poder seguir a la otra
 		// pantalla del juego
-		if (jugador != null) {
+		if (tcp.getSesion().size() >= 1) {
 			pantalla = 1;
 
 		}
@@ -108,66 +98,58 @@ public class Juego extends PApplet implements OnMessageListener {
 			// Enemigos
 			reina.pintar();
 			reina.movimiento();
-				
-			if(sesiones!=null) {
-			for (int i = 0; i < sesiones.size(); i++) {
+			System.out.println(tcp.getSesion().size());
+			for (int i = 0; i < tcp.getSesion().size(); i++) {
+				Jugador j = tcp.getSesion().get(i).jugador;
+				Posicion p = tcp.getSesion().get(i).posicion;
 
-				Posicion p = sesiones.get(i).posicion;
+				if (j != null && p != null) {
 
-				if (sis.posicion != null) {
+					// Validamos si escogen a cuphead
+					if (j.personaje.equals("cuphead")) {
 
-					 //Validamos si escogen a cuphead 
-					if (jugador.personaje.equals("cuphead")) {
-					 
-					  image(cuphead, p.getX(), p.getY(), 80, 100);
-					 
-					  }
-					  
-					  // Validamos si esogen a mugman 
-				if (jugador.personaje.equals("mugman")) {
-					  
-					 image(mugman, p.getX(), p.getY(), 80, 100);
-					  
-					  }
-					 
-				} else {
-					if (jugador.personaje.equals("cuphead")) {
-
-						image(cuphead, 400, 400, 80, 100);
+						image(cuphead, p.getX(), p.getY(), 80, 100);
 
 					}
-					if (jugador.personaje.equals("mugman")) {
 
-						image(mugman, 400, 400, 80, 100);
+					// Validamos si esogen a mugman
+					if (j.personaje.equals("mugman")) {
+
+						image(mugman, p.getX(), p.getY(), 80, 100);
 
 					}
-			}
-			}
+
+				}
+
 			}
 
 			// for que recorre el arraylist de disparo
+			if (tcp.getSesion().size() >= 2) {
+				for (int i = 0; i < disparos.size(); i++) {
 
-			for (int i = 0; i < disparos.size(); i++) {
-				Disparo disparoN = disparos.get(i);
+					Session J1 = tcp.getSesion().get(0);
+					Session J2 = tcp.getSesion().get(1);
 
-				fill(255);
-				ellipse(disparoN.getX(), disparoN.getY(), 20, 20);
+					Disparo disparoN = disparos.get(i);
 
-				// Hacemos que las balas se muevan hacia arriba
-				disparoN.setY(disparoN.getY() - disparoN.getVel());
+					fill(255);
+					ellipse(disparoN.getX(), disparoN.getY(), 20, 20);
 
-				// Validamos que si la bala del jugador toca a la reina, esta resulta lastimada
-				if (dist(disparoN.getX(), disparoN.getY(), reina.getPosX(), reina.getPosY()) < 80) {
-					disparos.remove(i);
+					// Hacemos que las balas se muevan hacia arriba
+					disparoN.setY(disparoN.getY() - disparoN.getVel());
 
-					vidaReina = vidaReina - 50;
+					// Validamos que si la bala del jugador toca a la reina, esta resulta lastimada
+					if (dist(disparoN.getX(), disparoN.getY(), reina.getPosX(), reina.getPosY()) < 80) {
+						disparos.remove(i);
 
-					System.out.println(vidaReina);
+						vidaReina = vidaReina - 50;
 
+						System.out.println(vidaReina);
+
+					}
 				}
 			}
 
-			
 			// for para pintar las vidas
 			for (int j = 0; j < vidas.size(); j++) {
 				ellipse(100 * j, 50, 20, 20);
@@ -196,16 +178,13 @@ public class Juego extends PApplet implements OnMessageListener {
 
 	}
 
-	
-
 	// validamos cuando alguno de los ataques de la reina toque a los jugadores,
 	// estos pierden vida
 	public void validarAtaqueEnemigo() {
 
 		for (int i = 0; i < reina.enemigos.size(); i++) {
-			
-			if(sesiones!=null) {
-			if (sis.posicion != null) {
+
+			if (posicion != null) {
 				if (dist(reina.enemigos.get(i).getPosX() + 15, reina.enemigos.get(i).getPosY() + 15,
 						posicion.getX() + 40, posicion.getY() + 50) < 20) {
 
@@ -219,7 +198,7 @@ public class Juego extends PApplet implements OnMessageListener {
 
 				}
 			}
-			}
+
 		}
 
 	}
@@ -236,11 +215,6 @@ public class Juego extends PApplet implements OnMessageListener {
 
 	}
 
-	public void messageJugador(Jugador jugador) {
-		this.jugador = jugador;
-
-	}
-
 	public void messagePosicion(model.Posicion posicion) {
 		this.posicion = posicion;
 
@@ -248,6 +222,12 @@ public class Juego extends PApplet implements OnMessageListener {
 
 	public void messageDisparo(model.Disparo disparo) {
 		disparos.add(disparo);
+
+	}
+
+	@Override
+	public void messageJugador(Jugador jugador) {
+		// TODO Auto-generated method stub
 
 	}
 

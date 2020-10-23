@@ -62,7 +62,7 @@ public class Session extends Thread {
 			//Recepcion de datos
 			while(true) {
 		    	
-		    	System.out.println("Esperando mensaje");
+		    	//System.out.println("Esperando mensaje");
 		
 		    	//Recibimos el mensaje
 		    	String mensaje;
