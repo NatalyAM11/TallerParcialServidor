@@ -43,7 +43,7 @@ public class Juego extends PApplet implements OnMessageListener {
 	int vidaReina;
 
 	// array de session
-	ArrayList<Session> sesiones = tcp.getSesion();
+	ArrayList<Session> sesiones;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -54,10 +54,13 @@ public class Juego extends PApplet implements OnMessageListener {
 	public void settings() {
 		size(800, 500);
 	}
+	
 
 	public void setup() {
 		tcp = TCPSingleton.getInstance();
 		tcp.setObserver(this);
+		
+		sesiones = tcp.getSesion();
 
 		// Cargamos las imagenes de los personajes
 		cuphead = loadImage("img/avionCupHead.png");
@@ -105,40 +108,28 @@ public class Juego extends PApplet implements OnMessageListener {
 			// Enemigos
 			reina.pintar();
 			reina.movimiento();
-
+				
+			if(sesiones!=null) {
 			for (int i = 0; i < sesiones.size(); i++) {
 
 				Posicion p = sesiones.get(i).posicion;
 
 				if (sis.posicion != null) {
 
-					switch (jugador.personaje) {
-
-					case "cuphead":
-
-						image(cuphead, p.getX(), p.getY(), 80, 100);
-
-						break;
-
-					case "mugman":
-
-						image(mugman, p.getX(), p.getY(), 80, 100);
-
-						break;
-					}
-					/*
-					 * // Validamos si escogen a cuphead if (jugador.personaje.equals("cuphead")) {
-					 * 
-					 * image(cuphead, p.getX(), p.getY(), 80, 100);
-					 * 
-					 * }
-					 * 
-					 * // Validamos si esogen a mugman if (jugador.personaje.equals("mugman")) {
-					 * 
-					 * image(mugman, p.getX(), p.getY(), 80, 100);
-					 * 
-					 * }
-					 */
+					 //Validamos si escogen a cuphead 
+					if (jugador.personaje.equals("cuphead")) {
+					 
+					  image(cuphead, p.getX(), p.getY(), 80, 100);
+					 
+					  }
+					  
+					  // Validamos si esogen a mugman 
+				if (jugador.personaje.equals("mugman")) {
+					  
+					 image(mugman, p.getX(), p.getY(), 80, 100);
+					  
+					  }
+					 
 				} else {
 					if (jugador.personaje.equals("cuphead")) {
 
@@ -150,8 +141,8 @@ public class Juego extends PApplet implements OnMessageListener {
 						image(mugman, 400, 400, 80, 100);
 
 					}
-
-				}
+			}
+			}
 			}
 
 			// for que recorre el arraylist de disparo
@@ -176,6 +167,7 @@ public class Juego extends PApplet implements OnMessageListener {
 				}
 			}
 
+			
 			// for para pintar las vidas
 			for (int j = 0; j < vidas.size(); j++) {
 				ellipse(100 * j, 50, 20, 20);
@@ -188,6 +180,7 @@ public class Juego extends PApplet implements OnMessageListener {
 			// Validamos cuando el jugador pierda todas sus vidas
 			if (vidas.size() == 0) {
 				System.out.println("FIN DEL JUEGOOOOOOOOOOOOOOO!");
+
 			}
 
 			break;
@@ -203,17 +196,15 @@ public class Juego extends PApplet implements OnMessageListener {
 
 	}
 
-	private void image(PImage cuphead2, Posicion pX, Posicion pY, int i, int j) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	// validamos cuando alguno de los ataques de la reina toque a los jugadores,
 	// estos pierden vida
 	public void validarAtaqueEnemigo() {
 
 		for (int i = 0; i < reina.enemigos.size(); i++) {
-
+			
+			if(sesiones!=null) {
 			if (sis.posicion != null) {
 				if (dist(reina.enemigos.get(i).getPosX() + 15, reina.enemigos.get(i).getPosY() + 15,
 						posicion.getX() + 40, posicion.getY() + 50) < 20) {
@@ -227,6 +218,7 @@ public class Juego extends PApplet implements OnMessageListener {
 					}
 
 				}
+			}
 			}
 		}
 

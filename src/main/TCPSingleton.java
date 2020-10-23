@@ -31,7 +31,6 @@ public class TCPSingleton extends Thread {
 	private TCPSingleton() {
 		
 		
-
 	}
 
 	// Instance
@@ -56,12 +55,11 @@ public class TCPSingleton extends Thread {
 		try {
 
 			// Conexión
+			sesion= new ArrayList<Session>();
 			server = new ServerSocket(5000);
-
 			
-			cantidad = sesion.size();
 			
-			while (true) {
+			while (sesion.size()<2) {
 
 				System.out.println("Esperando conexión");
 				Socket socket = server.accept();
