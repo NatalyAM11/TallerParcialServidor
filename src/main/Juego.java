@@ -100,6 +100,7 @@ public class Juego extends PApplet implements OnMessageListener {
 			reina.movimiento();
 			System.out.println(tcp.getSesion().size());
 			for (int i = 0; i < tcp.getSesion().size(); i++) {
+
 				Jugador j = tcp.getSesion().get(i).jugador;
 				Posicion p = tcp.getSesion().get(i).posicion;
 
@@ -130,7 +131,8 @@ public class Juego extends PApplet implements OnMessageListener {
 					Session J1 = tcp.getSesion().get(0);
 					Session J2 = tcp.getSesion().get(1);
 
-					Disparo disparoN = disparos.get(i);
+					Disparo disparoN = tcp.getSesion().get(i).disparo;
+					// Disparo disparoN = disparos.get(i);
 
 					fill(255);
 					ellipse(disparoN.getX(), disparoN.getY(), 20, 20);
@@ -148,11 +150,16 @@ public class Juego extends PApplet implements OnMessageListener {
 
 					}
 				}
-			}
 
-			// for para pintar las vidas
-			for (int j = 0; j < vidas.size(); j++) {
-				ellipse(100 * j, 50, 20, 20);
+				// for para pintar las vidas
+
+				for (int i = 0; i < tcp.getSesion().size(); i++) {
+
+					Vida v = tcp.getSesion().get(i).vida;
+
+					ellipse(100 * v.getVidas(), 50, 20, 20);
+
+				}
 			}
 
 			// metodo que valida que el jugador pierda vida cuando es golpeado por ataque de
@@ -192,8 +199,19 @@ public class Juego extends PApplet implements OnMessageListener {
 					reina.enemigos.remove(reina.enemigos.get(i));
 
 					// quitamos las vida del jugador
-					if (vidas.size() > 0) {
-						vidas.remove(vidas.size() - 1);
+					for (int j = 0; j < tcp.getSesion().size(); j++) {
+
+						Vida v = tcp.getSesion().get(i).vida;
+
+						if (v.getVidas() > 0) {
+
+							v.setVidas(-1);
+
+						}
+
+						/*
+						 * if (vidas.size() > 0) { vidas.remove(v.setVidas(-1)); }
+						 */
 					}
 
 				}
