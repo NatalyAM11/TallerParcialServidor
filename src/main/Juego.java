@@ -36,7 +36,12 @@ public class Juego extends PApplet implements OnMessageListener {
 	// Reina de dulce
 	ReinaDulce reina;
 
+	// int que controla la vida total de la reina
 	int vidaReina;
+
+	// int que controla el puntaje de ambos jugadores
+	int puntajeJ1;
+	int puntajeJ2;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -69,6 +74,9 @@ public class Juego extends PApplet implements OnMessageListener {
 		// Creamos a la reina dulce
 		reina = new ReinaDulce(this, 200, 100, 5, vidaReina);
 
+		puntajeJ1 = 0;
+		puntajeJ2 = 0;
+
 	}
 
 	public void draw() {
@@ -78,7 +86,6 @@ public class Juego extends PApplet implements OnMessageListener {
 		// pantalla del juego
 		if (tcp.getSesion().size() >= 1) {
 			pantalla = 1;
-
 		}
 
 		if (vidaReina == 0) {
@@ -98,7 +105,7 @@ public class Juego extends PApplet implements OnMessageListener {
 			// Enemigos
 			reina.pintar();
 			reina.movimiento();
-			System.out.println(tcp.getSesion().size());
+
 			for (int i = 0; i < tcp.getSesion().size(); i++) {
 
 				Jugador j = tcp.getSesion().get(i).jugador;
@@ -106,18 +113,39 @@ public class Juego extends PApplet implements OnMessageListener {
 
 				if (j != null && p != null) {
 
-					// Validamos si escogen a cuphead
-					if (j.personaje.equals("cuphead")) {
+					// opciones de personaje para jugador 1
+					if (i == 0) {
+						// Validamos si escogen a cuphead
+						if (j.personaje.equals("cuphead")) {
+							image(cuphead, p.getX(), p.getY(), 80, 100);
+							fill(255, 0, 0);
+						}
+						// Validamos si escogen a mugman
+						if (j.personaje.equals("mugman")) {
+							image(mugman, p.getX(), p.getY(), 80, 100);
+							fill(0, 0, 255);
+						}
 
-						image(cuphead, p.getX(), p.getY(), 80, 100);
-
+						// nombre del J1
+						text("Jugador1", p.getX() + 20, p.getY() + 110);
 					}
 
-					// Validamos si esogen a mugman
-					if (j.personaje.equals("mugman")) {
+					// opciones de personajes para jugador 2
+					if (i == 1) {
+						// Validamos si escogen a cuphead
+						if (j.personaje.equals("cuphead")) {
+							image(cuphead, p.getX(), p.getY(), 80, 100);
+							fill(255, 0, 0);
+						}
 
-						image(mugman, p.getX(), p.getY(), 80, 100);
+						// Validamos si esogen a mugman
+						if (j.personaje.equals("mugman")) {
+							image(mugman, p.getX(), p.getY(), 80, 100);
+							fill(0, 0, 255);
+						}
 
+						// nombre del J2
+						text("Jugador2", p.getX() + 20, p.getY() + 110);
 					}
 
 				}
@@ -125,14 +153,15 @@ public class Juego extends PApplet implements OnMessageListener {
 			}
 
 			// for que recorre el arraylist de disparo
-			if (tcp.getSesion().size() >= 2) {
-				for (int i = 0; i < disparos.size(); i++) {
+
+			for (int i = 0; i < tcp.getSesion().size(); i++) {
+				for (int j = 0; j < disparos.size(); j++) {
 
 					Session J1 = tcp.getSesion().get(0);
 					Session J2 = tcp.getSesion().get(1);
 
-					Disparo disparoN = tcp.getSesion().get(i).disparo;
-					// Disparo disparoN = disparos.get(i);
+					// Disparo disparoN = tcp.getSesion().get(i).disparo;
+					Disparo disparoN = disparos.get(j);
 
 					fill(255);
 					ellipse(disparoN.getX(), disparoN.getY(), 20, 20);
@@ -140,37 +169,74 @@ public class Juego extends PApplet implements OnMessageListener {
 					// Hacemos que las balas se muevan hacia arriba
 					disparoN.setY(disparoN.getY() - disparoN.getVel());
 
-					// Validamos que si la bala del jugador toca a la reina, esta resulta lastimada
-					if (dist(disparoN.getX(), disparoN.getY(), reina.getPosX(), reina.getPosY()) < 80) {
-						disparos.remove(i);
+					if (i == 0) {
+						puntajeJ1 = puntajeJ1;
 
-						vidaReina = vidaReina - 50;
+						// Validamos que si la bala del jugador toca a la reina, esta resulta lastimada
+						if (dist(disparoN.getX(), disparoN.getY(), reina.getPosX(), reina.getPosY()) < 80) {
+							disparos.remove(j);
+							vidaReina = vidaReina - 50;
 
-						System.out.println(vidaReina);
+							puntajeJ1 = puntajeJ1 + 50;
+							System.out.println("puntaje J1" + puntajeJ1);
+						}
+					}
+
+					if (i == 1) {
+						puntajeJ2 = puntajeJ2;
+
+						// Validamos que si la bala del jugador toca a la reina, esta resulta lastimada
+						if (dist(disparoN.getX(), disparoN.getY(), reina.getPosX(), reina.getPosY()) < 80) {
+							disparos.remove(j);
+							vidaReina = vidaReina - 50;
+
+							puntajeJ2 = puntajeJ2 + 50;
+							System.out.println("puntaje J2" + puntajeJ2);
+						}
 
 					}
 				}
+			}
 
-				// for para pintar las vidas
+			// Texto del puntaje de los jugadores
+			fill(255);
+			text(puntajeJ1, 50, 20);
+			text(puntajeJ2, 200, 20);
 
-				for (int i = 0; i < tcp.getSesion().size(); i++) {
+			// for para pintar las vidas
+			for (int j = 0; j < tcp.getSesion().size(); j++) {
+				for (int i = 0; i < vidas.size(); i++) {
 
-					Vida v = tcp.getSesion().get(i).vida;
+					Session J1 = tcp.getSesion().get(0);
+					Session J2 = tcp.getSesion().get(1);
 
-					ellipse(100 * v.getVidas(), 50, 20, 20);
+					Vida v = vidas.get(i);
+
+					if (j == 0) {
+						fill(241, 101, 248);
+						ellipse(5 + 8 * v.getVidas(), 50, 20, 20);
+					}
+
+					if (j == 1) {
+						fill(237, 248, 101);
+						ellipse(10 + 10 * v.getVidas(), 50, 20, 20);
+					}
+
+					// Vida v = tcp.getSesion().get(i).vida;
+					// ellipse(100 * v.getVidas(), 50, 20, 20);
 
 				}
 			}
 
 			// metodo que valida que el jugador pierda vida cuando es golpeado por ataque de
 			// la reina
-			validarAtaqueEnemigo();
+			// validarAtaqueEnemigo();
 
 			// Validamos cuando el jugador pierda todas sus vidas
-			if (vidas.size() == 0) {
-				System.out.println("FIN DEL JUEGOOOOOOOOOOOOOOO!");
-
-			}
+			/*
+			 * if (vidas.size() == 0) { System.out.println("FIN DEL JUEGOOOOOOOOOOOOOOO!");
+			 * }
+			 */
 
 			break;
 
@@ -201,17 +267,17 @@ public class Juego extends PApplet implements OnMessageListener {
 					// quitamos las vida del jugador
 					for (int j = 0; j < tcp.getSesion().size(); j++) {
 
-						Vida v = tcp.getSesion().get(i).vida;
+						Session J1 = tcp.getSesion().get(0);
+						Session J2 = tcp.getSesion().get(1);
 
-						if (v.getVidas() > 0) {
+						Vida v = vidas.get(i);
 
-							v.setVidas(-1);
-
+						if (vidas.size() > 0) {
+							vidas.remove(vidas.size() - 1);
 						}
 
-						/*
-						 * if (vidas.size() > 0) { vidas.remove(v.setVidas(-1)); }
-						 */
+						// Vida v = tcp.getSesion().get(i).vida;
+						/* if (v.getVidas() > 0) {v.setVidas(-1);} */
 					}
 
 				}
