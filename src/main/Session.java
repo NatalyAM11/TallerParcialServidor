@@ -80,7 +80,7 @@ public class Session extends Thread {
 				case "Jugador": 
 					jugador=gson.fromJson(mensaje, Jugador.class);
 					
-					observer.messageJugador(jugador);
+					observer.messageJugador(jugador,id);
 					
 					System.out.println(jugador.personaje);
 					break;
@@ -96,13 +96,8 @@ public class Session extends Thread {
 				case "Disparo": 
 					disparo=gson.fromJson(mensaje, Disparo.class);
 					
-					observer.messageDisparo(disparo);
+					observer.messageDisparo(disparo,id);
 					
-					break;
-			
-				case "Vida":
-					vida=gson.fromJson(mensaje, Vida.class);
-					observer.messageVida(vida);
 					break;
 					
 				}

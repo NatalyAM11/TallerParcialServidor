@@ -43,6 +43,10 @@ public class Juego extends PApplet implements OnMessageListener {
 	int puntajeJ1;
 	int puntajeJ2;
 
+	Session s1, s2;
+	
+	Jugador j;
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PApplet.main("main.Juego");
@@ -108,7 +112,7 @@ public class Juego extends PApplet implements OnMessageListener {
 
 			for (int i = 0; i < tcp.getSesion().size(); i++) {
 
-				Jugador j = tcp.getSesion().get(i).jugador;
+				j = tcp.getSesion().get(i).jugador;
 				Posicion p = tcp.getSesion().get(i).posicion;
 
 				if (j != null && p != null) {
@@ -153,50 +157,41 @@ public class Juego extends PApplet implements OnMessageListener {
 			}
 
 			// for que recorre el arraylist de disparo
+			if (tcp.getSesion().size() > 1) {
+				s1 = tcp.getSesion().get(0);
+				s2 = tcp.getSesion().get(1);
+			}
 
-			for (int i = 0; i < tcp.getSesion().size(); i++) {
-				for (int j = 0; j < disparos.size(); j++) {
+			// for (int i = 0; i < tcp.getSesion().size(); i++) {
+			for (int j = 0; j < disparos.size(); j++) {
 
-					Session J1 = tcp.getSesion().get(0);
-					Session J2 = tcp.getSesion().get(1);
+				// Disparo disparoN = tcp.getSesion().get(i).disparo;
+				Disparo disparoN = disparos.get(j);
 
-					// Disparo disparoN = tcp.getSesion().get(i).disparo;
-					Disparo disparoN = disparos.get(j);
+				fill(255);
+				ellipse(disparoN.getX(), disparoN.getY(), 20, 20);
 
-					fill(255);
-					ellipse(disparoN.getX(), disparoN.getY(), 20, 20);
+				// Hacemos que las balas se muevan hacia arriba
+				disparoN.setY(disparoN.getY() - disparoN.getVel());
 
-					// Hacemos que las balas se muevan hacia arriba
-					disparoN.setY(disparoN.getY() - disparoN.getVel());
+				// Validamos que si la bala del jugador toca a la reina, esta resulta lastimada
+				if (dist(disparoN.getX(), disparoN.getY(), reina.getPosX(), reina.getPosY()) < 80) {
+					disparos.remove(j);
+					vidaReina = vidaReina - 50;
 
-					if (i == 0) {
-						puntajeJ1 = puntajeJ1;
+					System.out.println("puntaje J1" + puntajeJ1);
 
-						// Validamos que si la bala del jugador toca a la reina, esta resulta lastimada
-						if (dist(disparoN.getX(), disparoN.getY(), reina.getPosX(), reina.getPosY()) < 80) {
-							disparos.remove(j);
-							vidaReina = vidaReina - 50;
-
-							puntajeJ1 = puntajeJ1 + 50;
-							System.out.println("puntaje J1" + puntajeJ1);
-						}
+					if (s1.getID().equals(disparoN.getId())) {
+						puntajeJ1 = puntajeJ1 + 50;
 					}
 
-					if (i == 1) {
-						puntajeJ2 = puntajeJ2;
-
-						// Validamos que si la bala del jugador toca a la reina, esta resulta lastimada
-						if (dist(disparoN.getX(), disparoN.getY(), reina.getPosX(), reina.getPosY()) < 80) {
-							disparos.remove(j);
-							vidaReina = vidaReina - 50;
-
-							puntajeJ2 = puntajeJ2 + 50;
-							System.out.println("puntaje J2" + puntajeJ2);
-						}
-
+					if (s2.getID().equals(disparoN.getId())) {
+						puntajeJ2 = puntajeJ2 + 50;
 					}
 				}
+
 			}
+			// }
 
 			// Texto del puntaje de los jugadores
 			fill(255);
@@ -204,29 +199,21 @@ public class Juego extends PApplet implements OnMessageListener {
 			text(puntajeJ2, 200, 20);
 
 			// for para pintar las vidas
-			for (int j = 0; j < tcp.getSesion().size(); j++) {
-				for (int i = 0; i < vidas.size(); i++) {
-
-					Session J1 = tcp.getSesion().get(0);
-					Session J2 = tcp.getSesion().get(1);
-
-					Vida v = vidas.get(i);
-
-					if (j == 0) {
+			
+					//Vida v = vidas.get(i);
+					if(j!=null) {
+						System.out.println(j.getVidas());
+					if (s1.getID().equals(j.getId())) {
 						fill(241, 101, 248);
-						ellipse(5 + 8 * v.getVidas(), 50, 20, 20);
+						ellipse(j.getVidas()*2, 50, 20, 20);
 					}
 
-					if (j == 1) {
+					if (s2.getID().equals(j.getId())) {
 						fill(237, 248, 101);
-						ellipse(10 + 10 * v.getVidas(), 50, 20, 20);
+						ellipse(j.getVidas()*2, 50, 20, 20);
 					}
-
-					// Vida v = tcp.getSesion().get(i).vida;
-					// ellipse(100 * v.getVidas(), 50, 20, 20);
-
-				}
-			}
+					}
+			
 
 			// metodo que valida que el jugador pierda vida cuando es golpeado por ataque de
 			// la reina
@@ -275,9 +262,6 @@ public class Juego extends PApplet implements OnMessageListener {
 						if (vidas.size() > 0) {
 							vidas.remove(vidas.size() - 1);
 						}
-
-						// Vida v = tcp.getSesion().get(i).vida;
-						/* if (v.getVidas() > 0) {v.setVidas(-1);} */
 					}
 
 				}
@@ -288,31 +272,21 @@ public class Juego extends PApplet implements OnMessageListener {
 	}
 
 	// OnMessageListener
-
-	public void messageVida(Vida vida) {
-		this.vida = vida;
-
-		vidas.add(new Vida(vida.getVidas()));
-		vidas.add(new Vida(vida.getVidas()));
-		vidas.add(new Vida(vida.getVidas()));
-		System.out.println("Hay : " + vidas.size() + "vidas");
-
-	}
-
 	public void messagePosicion(model.Posicion posicion) {
 		this.posicion = posicion;
 
 	}
 
-	public void messageDisparo(model.Disparo disparo) {
-		disparos.add(disparo);
+	public void messageDisparo(model.Disparo disparo, String id) {
+		Disparo dis = new Disparo(disparo.getX(), disparo.getY(), disparo.getVel(), id);
+		disparos.add(dis);
 
 	}
 
 	@Override
-	public void messageJugador(Jugador jugador) {
+	public void messageJugador(Jugador jugador,String id) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

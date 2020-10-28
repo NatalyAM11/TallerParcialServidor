@@ -7,12 +7,11 @@ import model.Vida;
 
 public interface OnMessageListener {
 	
-	void messageVida (Vida vida);
 	
-	void messageJugador (Jugador jugador);
+	void messageJugador (Jugador jugador, String id);
 	
 	void messagePosicion (Posicion posicion);
 	
-	void messageDisparo (Disparo disparo);
+	void messageDisparo (Disparo disparo, String id);
 	
 }

@@ -5,14 +5,24 @@ public class Disparo {
 
     public int x,y,vel;
     public String type="Disparo";
+    public String id;
 
-    public Disparo(int x, int y, int vel){
+    public Disparo(int x, int y, int vel,String id){
         this.x=x;
         this.y=y;
         this.vel=vel;
+        this.id=id;
     }
 
-    public int getX() {
+    public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public int getX() {
         return x;
     }
 
