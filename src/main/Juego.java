@@ -15,7 +15,7 @@ public class Juego extends PApplet implements OnMessageListener {
 	TCPSingleton tcp;
 
 	// Imagenes
-	PImage cuphead, mugman;
+	PImage cuphead, mugman, vidaR, vidaA, puntajeA, puntajeR;
 
 	// Arraylist de la vida de los jugadores
 	private ArrayList<Vida> vidas;
@@ -44,8 +44,10 @@ public class Juego extends PApplet implements OnMessageListener {
 	int puntajeJ2;
 
 	Session s1, s2;
-	
+
 	Jugador j;
+	
+	boolean perdio1, perdio2;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -64,6 +66,10 @@ public class Juego extends PApplet implements OnMessageListener {
 		// Cargamos las imagenes de los personajes
 		cuphead = loadImage("img/avionCupHead.png");
 		mugman = loadImage("img/avionMugman.png");
+		vidaR = loadImage("img/vidaR.png");
+		vidaA = loadImage("img/vidaA.png");
+		puntajeR = loadImage("img/puntajeR.png");
+		puntajeA = loadImage("img/puntajeA.png");
 
 		pantalla = 0;
 
@@ -80,11 +86,18 @@ public class Juego extends PApplet implements OnMessageListener {
 
 		puntajeJ1 = 0;
 		puntajeJ2 = 0;
+		
+		perdio1=false;
+		perdio2=false;
+		
+		
 
 	}
 
 	public void draw() {
 		background(0);
+
+		text("x=" + mouseX + "y=" + mouseY, mouseX, mouseY);
 
 		// Valido que cuando el jugador ya no sea nulo para poder seguir a la otra
 		// pantalla del juego
@@ -115,43 +128,117 @@ public class Juego extends PApplet implements OnMessageListener {
 				j = tcp.getSesion().get(i).jugador;
 				Posicion p = tcp.getSesion().get(i).posicion;
 
+				// Validar el ataque del enemigo a los personajes
+				validarAtaqueEnemigo(j, p);
+
 				if (j != null && p != null) {
 
 					// opciones de personaje para jugador 1
+
 					if (i == 0) {
 						// Validamos si escogen a cuphead
 						if (j.personaje.equals("cuphead")) {
 							image(cuphead, p.getX(), p.getY(), 80, 100);
+
+							// pinta texto puntaje del color del personaje
+							image(puntajeR, 20, 50, 90, 30);
 							fill(255, 0, 0);
 						}
 						// Validamos si escogen a mugman
 						if (j.personaje.equals("mugman")) {
 							image(mugman, p.getX(), p.getY(), 80, 100);
+
+							// pinta texto puntaje del color del personaje
+							image(puntajeA, 20, 50, 90, 30);
 							fill(0, 0, 255);
 						}
 
 						// nombre del J1
 						text("Jugador1", p.getX() + 20, p.getY() + 110);
+
+						// for que permite pintar las vidas
+						for (int k = 0; k < j.getVidas(); k++) {
+
+							// los if permiten diferenciar de que color es el icono se vida depenediendo del
+							// personaje
+							if (j.personaje.equals("cuphead")) {
+								image(vidaR, k * 40 + 20, 20, 38, 20);
+							}
+
+							if (j.personaje.equals("mugman")) {
+								image(vidaA, k * 40 + 20, 20, 38, 20);
+							}
+						}
+
+						// pintamos el puntaje del jugador 1
+						text(puntajeJ1, 112, 68);
+
+						// Validamos cuando el jugador 1 pierde todas sus vidas
+						if (j.getVidas() == 0) {
+							textSize(25);
+							text("El jugador 1 ha perdido", 255, 80);
+							perdio1=true;
+							System.out.println("Perdio el jugador 1");
+						}
 					}
 
 					// opciones de personajes para jugador 2
+
 					if (i == 1) {
 						// Validamos si escogen a cuphead
 						if (j.personaje.equals("cuphead")) {
 							image(cuphead, p.getX(), p.getY(), 80, 100);
+
+							// pinta texto puntaje del color del personaje
+							image(puntajeR, 630, 50, 90, 30);
 							fill(255, 0, 0);
 						}
 
 						// Validamos si esogen a mugman
 						if (j.personaje.equals("mugman")) {
 							image(mugman, p.getX(), p.getY(), 80, 100);
+
+							// pinta texto puntaje del color del personaje
+							image(puntajeA, 630, 50, 90, 30);
 							fill(0, 0, 255);
 						}
 
 						// nombre del J2
 						text("Jugador2", p.getX() + 20, p.getY() + 110);
-					}
 
+						// for que permite pintar las vidas
+						for (int k = 0; k < j.getVidas(); k++) {
+							// los if permiten diferenciar de que color es el icono se vida depenediendo del
+							// personaje
+
+							if (j.personaje.equals("cuphead")) {
+								image(vidaR, k * 40 + 660, 20, 38, 20);
+							}
+
+							if (j.personaje.equals("mugman")) {
+								image(vidaA, k * 40 + 660, 20, 38, 20);
+							}
+
+						}
+
+						// pintamos el puntaje del jugador 2
+						text(puntajeJ2, 730, 68);
+
+						// Validamos cuando el jugador 2 pierde todas sus vidas
+						if (j.getVidas() == 0) {
+							text("El jugador 1 ha perdido", 255, 80);
+							perdio2=true;
+							System.out.println("Perdio el jugador 2");
+						}
+					}
+					
+					if(perdio1==true && perdio2==true) {
+						System.out.println("perdieron todos");
+					}
+						
+						
+					
+			
 				}
 
 			}
@@ -191,39 +278,15 @@ public class Juego extends PApplet implements OnMessageListener {
 				}
 
 			}
-			// }
 
-			// Texto del puntaje de los jugadores
-			fill(255);
-			text(puntajeJ1, 50, 20);
-			text(puntajeJ2, 200, 20);
+			// Validamos cuando gana determinado jugador
+			if (puntajeJ1 == 900) {
+				System.out.println("GANO EL J1");
+			}
 
-			// for para pintar las vidas
-			
-					//Vida v = vidas.get(i);
-					if(j!=null) {
-						System.out.println(j.getVidas());
-					if (s1.getID().equals(j.getId())) {
-						fill(241, 101, 248);
-						ellipse(j.getVidas()*2, 50, 20, 20);
-					}
-
-					if (s2.getID().equals(j.getId())) {
-						fill(237, 248, 101);
-						ellipse(j.getVidas()*2, 50, 20, 20);
-					}
-					}
-			
-
-			// metodo que valida que el jugador pierda vida cuando es golpeado por ataque de
-			// la reina
-			// validarAtaqueEnemigo();
-
-			// Validamos cuando el jugador pierda todas sus vidas
-			/*
-			 * if (vidas.size() == 0) { System.out.println("FIN DEL JUEGOOOOOOOOOOOOOOO!");
-			 * }
-			 */
+			if (puntajeJ2 == 900) {
+				System.out.println("GANO EL J2");
+			}
 
 			break;
 
@@ -240,34 +303,44 @@ public class Juego extends PApplet implements OnMessageListener {
 
 	// validamos cuando alguno de los ataques de la reina toque a los jugadores,
 	// estos pierden vida
-	public void validarAtaqueEnemigo() {
+	public void validarAtaqueEnemigo(Jugador j, Posicion posicion) {
 
-		for (int i = 0; i < reina.enemigos.size(); i++) {
+		/*for (int i = 0; i < reina.enemigos.size(); i++) {
 
 			if (posicion != null) {
-				if (dist(reina.enemigos.get(i).getPosX() + 15, reina.enemigos.get(i).getPosY() + 15,
-						posicion.getX() + 40, posicion.getY() + 50) < 20) {
+
+				if (dist(reina.enemigos.get(i).getPosX() + 15, reina.enemigos.get(i).getPosY() + 30,
+						posicion.getX() + 80, posicion.getY()) < 25) {
 
 					// Eliminamos el enemigo que toque al jugador
 					reina.enemigos.remove(reina.enemigos.get(i));
 
-					// quitamos las vida del jugador
-					for (int j = 0; j < tcp.getSesion().size(); j++) {
-
-						Session J1 = tcp.getSesion().get(0);
-						Session J2 = tcp.getSesion().get(1);
-
-						Vida v = vidas.get(i);
-
-						if (vidas.size() > 0) {
-							vidas.remove(vidas.size() - 1);
-						}
-					}
-
+					// elminamos una vida del jugador
+					j.setVidas(j.getVidas() - 1);
 				}
 			}
+		}*/
+		
 
-		}
+		
+		  for (int i = 0; i < reina.enemigos.size(); i++) {
+		  
+		  if (posicion != null) {
+		  
+		  if ((reina.enemigos.get(i).getPosX() + 15 < posicion.getX() + 80 &&
+		  reina.enemigos.get(i).getPosX() + 15 > posicion.getX()) &&
+		  (reina.enemigos.get(i).getPosY() + 30 > posicion.getY() &&
+		  reina.enemigos.get(i).getPosY() + 30 < posicion.getY()+50)) {
+		  
+		  // Eliminamos el enemigo que toque al jugador
+		  reina.enemigos.remove(reina.enemigos.get(i));
+		  
+		  // elminamos una vida del jugador 
+		   	j.setVidas(j.getVidas() - 1);
+		   	 } 
+		  }
+		  }
+		 
 
 	}
 
@@ -284,9 +357,9 @@ public class Juego extends PApplet implements OnMessageListener {
 	}
 
 	@Override
-	public void messageJugador(Jugador jugador,String id) {
+	public void messageJugador(Jugador jugador, String id) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

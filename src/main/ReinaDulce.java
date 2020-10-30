@@ -52,9 +52,6 @@ public class ReinaDulce {
 			enemigos.get(i).pintar();
 			enemigos.get(i).movimiento();
 		}
-		
-		
-		
 	}
 	
 	

@@ -33,7 +33,7 @@ public class Session extends Thread {
 		Disparo disparo;
 		
 		//vida
-		Vida vida;
+		int vida;
 		
 		
 		Gson gson;
@@ -42,6 +42,7 @@ public class Session extends Thread {
 		super();
 		this.socket = socket;
 		this.id = UUID.randomUUID().toString();
+		this.vida=3;
 		
 	}
 
@@ -79,9 +80,10 @@ public class Session extends Thread {
 				
 				case "Jugador": 
 					jugador=gson.fromJson(mensaje, Jugador.class);
-					
+					jugador.setId(this.id);
+					jugador.setVidas(this.vida);
 					observer.messageJugador(jugador,id);
-					
+					System.out.println(jugador.getVidas());
 					System.out.println(jugador.personaje);
 					break;
 					
