@@ -48,7 +48,7 @@ public class Juego extends PApplet implements OnMessageListener {
 
 	Session s1, s2;
 
-	Jugador j;
+	Jugador j, idCambio;
 
 	boolean perdio1, perdio2;
 
@@ -115,8 +115,19 @@ public class Juego extends PApplet implements OnMessageListener {
 		background(0);
 
 		// Valido que exista por lo menos un jugador para empezar el juego
-		if ((tcp.getSesion().size() >= 1)) {
+		/*if ((tcp.getSesion().size() >= 1)) {
 			pantalla = 3;
+		}*/
+		
+		for (int x = 0; x < tcp.getSesion().size(); x++) {	
+			
+			idCambio = tcp.getSesion().get(x).jugador;
+			
+			if(idCambio != null) {
+				
+				pantalla = 3;
+				
+			}
 		}
 
 		// Validamos cuando el jugador 1 gana
