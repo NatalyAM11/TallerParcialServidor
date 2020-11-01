@@ -56,6 +56,8 @@ public class Juego extends PApplet implements OnMessageListener {
 
 	boolean perdio1, perdio2;
 
+	boolean puedePasar1, puedePasar2;
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		PApplet.main("main.Juego");
@@ -119,15 +121,25 @@ public class Juego extends PApplet implements OnMessageListener {
 		perdio1 = false;
 		perdio2 = false;
 
+		puedePasar1 = false;
+		puedePasar2 = false;
+
 	}
 
 	public void draw() {
 		background(0);
 
 		// Valido que exista por lo menos un jugador para empezar el juego
-		if ((tcp.getSesion().size() >= 1)) {
+		if (tcp.getSesion().size() >= 2) {
 			pantalla = 3;
 		}
+
+		// Aqui intente que no pase a la pantalla de juego si no habia escogido algun
+		// personaje
+		/*
+		 * if ((tcp.getSesion().size() >= 2) && puedePasar1 == true && puedePasar2 ==
+		 * true) { pantalla = 3; }
+		 */
 
 		// Validamos cuando el jugador 1 gana
 		if (puntajeJ1 == 1000) {
@@ -205,6 +217,8 @@ public class Juego extends PApplet implements OnMessageListener {
 
 					if (i == 0) {
 
+						puedePasar1 = true;
+
 						// Validamos si escogen a cuphead
 						if (j.personaje.equals("cuphead")) {
 							image(cuphead, p.getX(), p.getY(), 80, 100);
@@ -212,7 +226,9 @@ public class Juego extends PApplet implements OnMessageListener {
 							// pinta texto puntaje del color del personaje
 							image(puntajeR, 20, 50, 90, 30);
 							fill(255, 0, 0);
+
 						}
+
 						// Validamos si escogen a mugman
 						if (j.personaje.equals("mugman")) {
 							image(mugman, p.getX(), p.getY(), 80, 100);
@@ -220,6 +236,7 @@ public class Juego extends PApplet implements OnMessageListener {
 							// pinta texto puntaje del color del personaje
 							image(puntajeA, 20, 50, 90, 30);
 							fill(0, 0, 255);
+
 						}
 
 						// nombre del J1
@@ -254,6 +271,9 @@ public class Juego extends PApplet implements OnMessageListener {
 					// opciones de personajes para jugador 2
 
 					if (i == 1) {
+
+						puedePasar2 = true;
+
 						// Validamos si escogen a cuphead
 						if (j.personaje.equals("cuphead")) {
 							image(cuphead, p.getX(), p.getY(), 80, 100);
@@ -261,6 +281,7 @@ public class Juego extends PApplet implements OnMessageListener {
 							// pinta texto puntaje del color del personaje
 							image(puntajeR, 630, 50, 90, 30);
 							fill(255, 0, 0);
+
 						}
 
 						// Validamos si esogen a mugman
@@ -270,6 +291,7 @@ public class Juego extends PApplet implements OnMessageListener {
 							// pinta texto puntaje del color del personaje
 							image(puntajeA, 630, 50, 90, 30);
 							fill(0, 0, 255);
+
 						}
 
 						// nombre del J2
