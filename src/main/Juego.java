@@ -129,6 +129,7 @@ public class Juego extends PApplet implements OnMessageListener {
 	public void draw() {
 		background(0);
 		
+		//No pasamos a la pentalla de juego hasta que elijan un jugador
 		for (int x = 0; x < tcp.getSesion().size(); x++) {	
 			
 			idCambio = tcp.getSesion().get(x).jugador;
