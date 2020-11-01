@@ -15,7 +15,10 @@ public class Juego extends PApplet implements OnMessageListener {
 	TCPSingleton tcp;
 
 	// Imagenes
-	PImage cuphead, mugman, vidaR, vidaA, puntajeA, puntajeR;
+	PImage cuphead, mugman, vidaR, vidaA, puntajeA, puntajeR, bEmpezar, bEmpezarP, bJugar, bJugarP, bInstrucciones,
+			bInstP;
+	// pantallas
+	PImage pLogo, pIntro, pExpli, pGameOver, fondoJuego, pGanoJ1, pGanoJ2,pGananTodos;
 
 	// Arraylist de la vida de los jugadores
 	private ArrayList<Vida> vidas;
@@ -46,7 +49,7 @@ public class Juego extends PApplet implements OnMessageListener {
 	Session s1, s2;
 
 	Jugador j;
-	
+
 	boolean perdio1, perdio2;
 
 	public static void main(String[] args) {
@@ -63,14 +66,30 @@ public class Juego extends PApplet implements OnMessageListener {
 		tcp = TCPSingleton.getInstance();
 		tcp.setObserver(this);
 
-		// Cargamos las imagenes de los personajes
+		// Cargamos todas las imagenes del juego
 		cuphead = loadImage("img/avionCupHead.png");
 		mugman = loadImage("img/avionMugman.png");
 		vidaR = loadImage("img/vidaR.png");
 		vidaA = loadImage("img/vidaA.png");
 		puntajeR = loadImage("img/puntajeR.png");
 		puntajeA = loadImage("img/puntajeA.png");
+		puntajeA = loadImage("img/puntajeA.png");
+		pLogo = loadImage("img/pLogo.png");
+		bEmpezar = loadImage("img/bEmpezar.png");
+		bEmpezarP = loadImage("img/bEmpezarPrendido.png");
+		bJugar = loadImage("img/bJugar.png");
+		bJugarP = loadImage("img/bJugarPrendido.png");
+		pIntro = loadImage("img/pIntro.png");
+		pExpli = loadImage("img/pExpli.png");
+		bInstrucciones = loadImage("img/bInstrucciones.png");
+		bInstP = loadImage("img/bInstPrendido.png");
+		pGameOver = loadImage("img/pGameOver.png");
+		fondoJuego = loadImage("img/fondoJuego.png");
+		pGanoJ1 = loadImage("img/pGanoJ1.png");
+		pGanoJ2 = loadImage("img/pGanoJ2.png");
+		pGananTodos = loadImage("img/pTodosGanan.png");
 
+		// variable que controla las pantallas
 		pantalla = 0;
 
 		// Arraylist del disparo de los jugadores
@@ -86,38 +105,84 @@ public class Juego extends PApplet implements OnMessageListener {
 
 		puntajeJ1 = 0;
 		puntajeJ2 = 0;
-		
-		perdio1=false;
-		perdio2=false;
-		
-		
+
+		perdio1 = false;
+		perdio2 = false;
 
 	}
 
 	public void draw() {
 		background(0);
 
-		text("x=" + mouseX + "y=" + mouseY, mouseX, mouseY);
-
-		// Valido que cuando el jugador ya no sea nulo para poder seguir a la otra
-		// pantalla del juego
-		if (tcp.getSesion().size() >= 1) {
-			pantalla = 1;
+		// Valido que exista por lo menos un jugador para empezar el juego
+		if ((tcp.getSesion().size() >= 1)) {
+			pantalla = 3;
 		}
 
-		if (vidaReina == 0) {
-			pantalla = 3;
+		// Validamos cuando el jugador 1 gana
+		if (puntajeJ1 == 1000) {
+			pantalla = 4;
+			System.out.println("GANO EL J1");
+		}
+
+		// Validamos cuando el jugador 1 gana
+		if (puntajeJ2 == 1000) {
+			pantalla = 5;
+			System.out.println("GANO EL J2");
+		}
+
+		// validamos cuando todos los jugadores pierden
+		if (perdio1 == true && perdio2 == true) {
+			pantalla = 6;
+			System.out.println("perdieron todos");
+		}
+		
+		// Si se da la casualidad de que ambos jugadores ganan
+		if ((perdio1 == false && perdio2 == false) && vidaReina==0) {
+			pantalla = 7;
+			System.out.println("Ganaron todos");
 		}
 
 		switch (pantalla) {
 		case 0:
-			fill(255);
-			text("intro", 255, 255);
+
+			image(pLogo, 0, 0);
+			image(bEmpezar, 325, 358);
+			image(bInstrucciones, 280, 419);
+
+			// Efecto del boton
+			if ((mouseX > 325 && mouseX < 467) && (mouseY > 358 && mouseY < 400)) {
+				image(bEmpezarP, 325, 358);
+			}
+
+			// Efecto del boton instrucciones
+			if ((mouseX > 280 && mouseX < 517) && (mouseY > 419 && mouseY < 459)) {
+				image(bInstP, 280, 419);
+			}
+
+			text("x=" + mouseX + "y=" + mouseY, mouseX, mouseY);
+			break;
+
+		case 1:
+
+			image(pIntro, 0, 0);
+			image(bJugar, 325, 387);
+
+			// Efecto del boton
+			if ((mouseX > 325 && mouseX < 467) && (mouseY > 387 && mouseY < 430)) {
+				image(bJugarP, 325, 387);
+			}
 
 			break;
 
+		case 2:
+			image(pExpli, 0, 0);
+			break;
+
 		// pantalla juego
-		case 1:
+		case 3:
+
+			image(fondoJuego, 0, 0);
 
 			// Enemigos
 			reina.pintar();
@@ -136,6 +201,7 @@ public class Juego extends PApplet implements OnMessageListener {
 					// opciones de personaje para jugador 1
 
 					if (i == 0) {
+
 						// Validamos si escogen a cuphead
 						if (j.personaje.equals("cuphead")) {
 							image(cuphead, p.getX(), p.getY(), 80, 100);
@@ -175,9 +241,9 @@ public class Juego extends PApplet implements OnMessageListener {
 
 						// Validamos cuando el jugador 1 pierde todas sus vidas
 						if (j.getVidas() == 0) {
-							textSize(25);
 							text("El jugador 1 ha perdido", 255, 80);
-							perdio1=true;
+							perdio1 = true;
+							puntajeJ1 = 0;
 							System.out.println("Perdio el jugador 1");
 						}
 					}
@@ -226,24 +292,21 @@ public class Juego extends PApplet implements OnMessageListener {
 
 						// Validamos cuando el jugador 2 pierde todas sus vidas
 						if (j.getVidas() == 0) {
-							text("El jugador 1 ha perdido", 255, 80);
-							perdio2=true;
+							text("El jugador 2 ha perdido", 255, 80);
+							puntajeJ2 = 0;
+							perdio2 = true;
 							System.out.println("Perdio el jugador 2");
 						}
 					}
-					
-					if(perdio1==true && perdio2==true) {
-						System.out.println("perdieron todos");
-					}
-						
-						
-					
-			
+
 				}
 
 			}
 
+			// Aqui validamos todo lo del disparo
+
 			// for que recorre el arraylist de disparo
+
 			if (tcp.getSesion().size() > 1) {
 				s1 = tcp.getSesion().get(0);
 				s2 = tcp.getSesion().get(1);
@@ -276,27 +339,24 @@ public class Juego extends PApplet implements OnMessageListener {
 						puntajeJ2 = puntajeJ2 + 50;
 					}
 				}
-
-			}
-
-			// Validamos cuando gana determinado jugador
-			if (puntajeJ1 == 900) {
-				System.out.println("GANO EL J1");
-			}
-
-			if (puntajeJ2 == 900) {
-				System.out.println("GANO EL J2");
 			}
 
 			break;
 
-		case 3:
-
-			fill(255);
-			textSize(50);
-			text("Gano", 255, 255);
+		case 4:
+			image(pGanoJ1, 0, 0);
 			break;
 
+		case 5:
+			image(pGanoJ2, 0, 0);
+			break;
+
+		case 6:
+			image(pGameOver, 0, 0);
+			break;
+		case 7:
+			image(pGananTodos, 0, 0);
+			break;
 		}
 
 	}
@@ -305,12 +365,14 @@ public class Juego extends PApplet implements OnMessageListener {
 	// estos pierden vida
 	public void validarAtaqueEnemigo(Jugador j, Posicion posicion) {
 
-		/*for (int i = 0; i < reina.enemigos.size(); i++) {
+		for (int i = 0; i < reina.enemigos.size(); i++) {
 
 			if (posicion != null) {
 
-				if (dist(reina.enemigos.get(i).getPosX() + 15, reina.enemigos.get(i).getPosY() + 30,
-						posicion.getX() + 80, posicion.getY()) < 25) {
+				if ((reina.enemigos.get(i).getPosX() + 15 < posicion.getX() + 80
+						&& reina.enemigos.get(i).getPosX() + 15 > posicion.getX())
+						&& (reina.enemigos.get(i).getPosY() + 30 > posicion.getY()
+								&& reina.enemigos.get(i).getPosY() + 30 < posicion.getY() + 50)) {
 
 					// Eliminamos el enemigo que toque al jugador
 					reina.enemigos.remove(reina.enemigos.get(i));
@@ -319,28 +381,7 @@ public class Juego extends PApplet implements OnMessageListener {
 					j.setVidas(j.getVidas() - 1);
 				}
 			}
-		}*/
-		
-
-		
-		  for (int i = 0; i < reina.enemigos.size(); i++) {
-		  
-		  if (posicion != null) {
-		  
-		  if ((reina.enemigos.get(i).getPosX() + 15 < posicion.getX() + 80 &&
-		  reina.enemigos.get(i).getPosX() + 15 > posicion.getX()) &&
-		  (reina.enemigos.get(i).getPosY() + 30 > posicion.getY() &&
-		  reina.enemigos.get(i).getPosY() + 30 < posicion.getY()+50)) {
-		  
-		  // Eliminamos el enemigo que toque al jugador
-		  reina.enemigos.remove(reina.enemigos.get(i));
-		  
-		  // elminamos una vida del jugador 
-		   	j.setVidas(j.getVidas() - 1);
-		   	 } 
-		  }
-		  }
-		 
+		}
 
 	}
 
@@ -359,6 +400,28 @@ public class Juego extends PApplet implements OnMessageListener {
 	@Override
 	public void messageJugador(Jugador jugador, String id) {
 		// TODO Auto-generated method stub
+
+	}
+
+	public void mousePressed() {
+		switch (pantalla) {
+		case 0:
+			// Pasamos a la pantalla de intro
+			if ((mouseX > 325 && mouseX < 467) && (mouseY > 358 && mouseY < 400)) {
+				pantalla = 1;
+			}
+			break;
+
+		case 1:
+
+			// Pasamos a la pantalla de instrucciones
+			if ((mouseX > 325 && mouseX < 467) && (mouseY > 387 && mouseY < 430)) {
+				pantalla = 2;
+			}
+
+			break;
+
+		}
 
 	}
 
