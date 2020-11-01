@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import main.Enemigo;
 
 import processing.core.PApplet;
+import processing.core.PImage;
 
 
 public class ReinaDulce {
 		
 	
 		PApplet app;
+		
+		//imagen
+		PImage reina;
 	
 	
 		//posicioines y velocidad
@@ -32,11 +36,16 @@ public class ReinaDulce {
 		this.vida=vida;
 		this.app=app;
 		
+		// imagen
+		reina = app.loadImage("img/Queen.png");
+		
 		//arraylist de los enemigos del ataque
 		enemigos=new ArrayList<Enemigo>();
 		
 		//metodo de ataque que añade enemigos al arraylist
 		ataque();
+		
+		
 		
 		
 	}	
@@ -45,7 +54,7 @@ public class ReinaDulce {
 	
 	public void pintar() {
 		app.fill(255);
-		app.ellipse(this.posX, this.posY,100,100);
+		app.image(reina,this.posX, this.posY,100,100);
 		
 		//pintamos y movemos los enemigos del ataque de la reina
 		for (int i = 0;i<enemigos.size(); i++) {
