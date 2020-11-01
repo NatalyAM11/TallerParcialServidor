@@ -136,6 +136,7 @@ public class Juego extends PApplet implements OnMessageListener {
 
 		// Aqui intente que no pase a la pantalla de juego si no habia escogido algun
 		// personaje
+
 		/*
 		 * if ((tcp.getSesion().size() >= 2) && puedePasar1 == true && puedePasar2 ==
 		 * true) { pantalla = 3; }
@@ -211,13 +212,15 @@ public class Juego extends PApplet implements OnMessageListener {
 				// Validar el ataque del enemigo a los personajes
 				validarAtaqueEnemigo(j, p);
 
+				if (j != null) {
+					puedePasar1 = true;
+					puedePasar2 = true;
+				}
+
 				if (j != null && p != null) {
 
 					// opciones de personaje para jugador 1
-
 					if (i == 0) {
-
-						puedePasar1 = true;
 
 						// Validamos si escogen a cuphead
 						if (j.personaje.equals("cuphead")) {
@@ -271,8 +274,6 @@ public class Juego extends PApplet implements OnMessageListener {
 					// opciones de personajes para jugador 2
 
 					if (i == 1) {
-
-						puedePasar2 = true;
 
 						// Validamos si escogen a cuphead
 						if (j.personaje.equals("cuphead")) {
