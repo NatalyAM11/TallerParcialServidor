@@ -15,10 +15,14 @@ public class Juego extends PApplet implements OnMessageListener {
 	TCPSingleton tcp;
 
 	// Imagenes
-	PImage cuphead, mugman, vidaR, vidaA, puntajeA, puntajeR, bEmpezar, bEmpezarP, bJugar, bJugarP, bInstrucciones,
-			bInstP;
+	PImage cuphead, mugman, balaJugador;
+
 	// pantallas
-	PImage pLogo, pIntro, pExpli, pGameOver, fondoJuego, pGanoJ1, pGanoJ2,pGananTodos;
+	PImage pLogo, pIntro, pExpli, pGameOver, fondoJuego, pGanoJ1, pGanoJ2, pGananTodos, pInstrucciones;
+
+	// iconos y botone
+	PImage vidaR, vidaA, puntajeA, puntajeR, bEmpezar, bEmpezarP, bJugar, bJugarP, bInstrucciones, bFin, bFinP, bInstP,
+			bVolver, bVolverP;
 
 	// Arraylist de la vida de los jugadores
 	private ArrayList<Vida> vidas;
@@ -88,6 +92,12 @@ public class Juego extends PApplet implements OnMessageListener {
 		pGanoJ1 = loadImage("img/pGanoJ1.png");
 		pGanoJ2 = loadImage("img/pGanoJ2.png");
 		pGananTodos = loadImage("img/pTodosGanan.png");
+		bFin = loadImage("img/bFin.png");
+		bFinP = loadImage("img/bFinP.png");
+		balaJugador = loadImage("img/disparoQueen.png");
+		pInstrucciones = loadImage("img/pInstrucciones.png");
+		bVolver = loadImage("img/bVolver.png");
+		bVolverP = loadImage("img/bVolverP.png");
 
 		// variable que controla las pantallas
 		pantalla = 0;
@@ -136,12 +146,6 @@ public class Juego extends PApplet implements OnMessageListener {
 			pantalla = 6;
 			System.out.println("perdieron todos");
 		}
-		
-		// Si se da la casualidad de que ambos jugadores ganan
-		if ((perdio1 == false && perdio2 == false) && vidaReina==0) {
-			pantalla = 7;
-			System.out.println("Ganaron todos");
-		}
 
 		switch (pantalla) {
 		case 0:
@@ -160,7 +164,6 @@ public class Juego extends PApplet implements OnMessageListener {
 				image(bInstP, 280, 419);
 			}
 
-			text("x=" + mouseX + "y=" + mouseY, mouseX, mouseY);
 			break;
 
 		case 1:
@@ -241,7 +244,7 @@ public class Juego extends PApplet implements OnMessageListener {
 
 						// Validamos cuando el jugador 1 pierde todas sus vidas
 						if (j.getVidas() == 0) {
-							text("El jugador 1 ha perdido", 255, 80);
+							text("El jugador 1 ha perdido, su puntaje es anulado", 255, 80);
 							perdio1 = true;
 							puntajeJ1 = 0;
 							System.out.println("Perdio el jugador 1");
@@ -292,7 +295,7 @@ public class Juego extends PApplet implements OnMessageListener {
 
 						// Validamos cuando el jugador 2 pierde todas sus vidas
 						if (j.getVidas() == 0) {
-							text("El jugador 2 ha perdido", 255, 80);
+							text("El jugador 2 ha perdido, su puntaje es anulado", 255, 80);
 							puntajeJ2 = 0;
 							perdio2 = true;
 							System.out.println("Perdio el jugador 2");
@@ -319,7 +322,7 @@ public class Juego extends PApplet implements OnMessageListener {
 				Disparo disparoN = disparos.get(j);
 
 				fill(255);
-				ellipse(disparoN.getX(), disparoN.getY(), 20, 20);
+				image(balaJugador, disparoN.getX(), disparoN.getY(), 20, 20);
 
 				// Hacemos que las balas se muevan hacia arriba
 				disparoN.setY(disparoN.getY() - disparoN.getVel());
@@ -345,19 +348,51 @@ public class Juego extends PApplet implements OnMessageListener {
 
 		case 4:
 			image(pGanoJ1, 0, 0);
+
+			image(bFin, 258, 358);
+
+			if ((mouseX > 258 && mouseX < 564) && (mouseY > 358 && mouseY < 409)) {
+				image(bFinP, 258, 358);
+			}
+
 			break;
 
 		case 5:
 			image(pGanoJ2, 0, 0);
+			image(bFin, 258, 358);
+
+			if ((mouseX > 258 && mouseX < 564) && (mouseY > 358 && mouseY < 409)) {
+				image(bFinP, 258, 358);
+			}
+
 			break;
 
 		case 6:
 			image(pGameOver, 0, 0);
+			image(bFin, 258, 358);
+
+			if ((mouseX > 258 && mouseX < 564) && (mouseY > 358 && mouseY < 409)) {
+				image(bFinP, 258, 358);
+			}
+
 			break;
 		case 7:
 			image(pGananTodos, 0, 0);
 			break;
+
+		case 8:
+			image(pInstrucciones, 0, 0);
+
+			image(bVolver, 28, 432);
+
+			if ((mouseX > 28 && mouseX < 108) && (mouseY > 432 && mouseY < 464)) {
+				image(bVolverP, 28, 432);
+			}
+
+			break;
 		}
+
+		text("x=" + mouseX + "y=" + mouseY, mouseX, mouseY);
 
 	}
 
@@ -410,6 +445,11 @@ public class Juego extends PApplet implements OnMessageListener {
 			if ((mouseX > 325 && mouseX < 467) && (mouseY > 358 && mouseY < 400)) {
 				pantalla = 1;
 			}
+
+			// Pasamos a la pantalla de instrucciones
+			if ((mouseX > 280 && mouseX < 517) && (mouseY > 419 && mouseY < 459)) {
+				pantalla = 8;
+			}
 			break;
 
 		case 1:
@@ -417,6 +457,38 @@ public class Juego extends PApplet implements OnMessageListener {
 			// Pasamos a la pantalla de instrucciones
 			if ((mouseX > 325 && mouseX < 467) && (mouseY > 387 && mouseY < 430)) {
 				pantalla = 2;
+			}
+
+			break;
+
+		case 4:
+			// salimos del juego
+			if ((mouseX > 258 && mouseX < 564) && (mouseY > 358 && mouseY < 409)) {
+				exit();
+			}
+
+			break;
+
+		case 5:
+			// salimos del juego
+			if ((mouseX > 258 && mouseX < 564) && (mouseY > 358 && mouseY < 409)) {
+				exit();
+			}
+
+			break;
+
+		case 6:
+			// salimos del juego
+			if ((mouseX > 258 && mouseX < 564) && (mouseY > 358 && mouseY < 409)) {
+				exit();
+			}
+
+			break;
+
+		case 8:
+			// nos devolvemos a la pantalla de inicio
+			if ((mouseX > 28 && mouseX < 108) && (mouseY > 432 && mouseY < 464)) {
+				pantalla = 0;
 			}
 
 			break;
